@@ -9,7 +9,7 @@ const initialMovie = {
     metascore: '',
     stars: []
 }
-const UpdateMovie = ({setMovieList}) => {
+const UpdateMovie = props => {
     const { push } = useHistory();
     const { id } = useParams();
     const [movie, setMovie] = useState(initialMovie)
@@ -17,9 +17,11 @@ const UpdateMovie = ({setMovieList}) => {
     useEffect(() => {
         axios
             .get(`http://localhost:5000/api/movies/${id}`)
-            .then(res => console.log(res))
+            .then(res => {
+                setMovie(res.data)
+            })
             .catch(err => console.log(err))
-    })
+    },[id])
 
     const changeHandler = e => {
         e.preventDefault();
@@ -34,11 +36,27 @@ const UpdateMovie = ({setMovieList}) => {
         })
     }
 
+    const handleSubmit = e => {
+        e.preventDefault();
+        axios  
+            .put(`http://localhost:5000/api/movies/${id}`, movie)
+            .then(res => {
+                //res.data
+                // props.setMovieList([...props.movieList, res.data])
+                push(`/movies/${id}`)
+            })
+            .catch(err => console.log(err))
+            .finally(() => {
+                props.refreshHandler()
+            }
+            )
+    }
+
 
     return (
         <>
             <h2>Update Movie</h2>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label>Title</label>
                 <input 
                     type='text'

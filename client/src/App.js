@@ -10,6 +10,7 @@ import UpdateMovie from './Movies/UpdateMovie'
 const App = () => {
   const [savedList, setSavedList] = useState([]);
   const [movieList, setMovieList] = useState([]);
+  const [refreshList, setRefreshList] = useState(false)
 
   const getMovieList = () => {
     axios
@@ -24,7 +25,11 @@ const App = () => {
 
   useEffect(() => {
     getMovieList();
-  }, []);
+  }, [refreshList]);
+
+  const refreshHandler = ()=>{
+    setRefreshList(!refreshList)
+  }
 
   return (
     <>
@@ -39,7 +44,7 @@ const App = () => {
       </Route>
 
       <Route path='/update-movie/:id'>
-        <UpdateMovie setMovieList={setMovieList}/>
+        <UpdateMovie refreshHandler={refreshHandler}/>
       </Route>
     </>
   );
